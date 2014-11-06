@@ -46,64 +46,67 @@ window.findNRooksSolution = function(n) {
 
 
 // return the number of nxn chessboards that exist, with n rooks placed such that none of them can attack each other
-window.countNRooksSolutions = function(n, board, row, solutions) {
+window.countNRooksSolutions = function(n, board, row, solutionCount) {
+  // handle exception cases
   if (n === 0 || n === 1) {
     return 1;
   }
-  debugger;
 
-  // set up current board, current row, and total solutions counted
-  board = board || new Board({'n': n});
+  // use current board or make new board
+  board = board || new Board({"n":n});
+  // use current row or start at 0
   row = row || 0;
-  solutions = solutions || 0;
+  // use current solution count or start at 0
+  solutionCount = solutionCount || 0;
 
-  // iterate through col positions of current row
+  // iterate through current row column indexes
   for (var col = 0; col < n; col++) {
-    // check if any col position is toggled
-    if (board.rows()[row][col] === 1) {
+    // if position is untoggled
+    if (board.get(row)[col] === 0) {
+      // toggle
       board.togglePiece(row, col);
-      if (col + 1 === n && row + n === n) {
-        return solutions;
-      } else if (col +  1 === n) {
-        solutions = window.countNRooksSolutions(n, board, row-1, solutions);
-      }
-      col += 1;
-    }
-    // toggle cell
-    board.togglePiece(row, col);
-    // if no row or column conflicts exist
-    if (!board.hasAnyRooksConflicts()) {
-      // if next row does not exist
-      if (row + 1 === n) {
-        // increment total solutions
-        debugger;
-        solutions += 1;
-        // check if next col exists
-        if (col + 1 === n) {
-          board.togglePiece(row, col);
-          // recursion
-          solutions = window.countNRooksSolutions(n, board, row-1, solutions);
+      // if no conflicts
+      if (!board.hasColConflictAt(col)) {
+        // if next row does not exist
+        if (row + 1 === n) {
+          // increment solution count (solution + 1)
+          // debugger;
+          solutionCount += 1;
+          // if next column does not exist
+          if (col + 1 === n) {
+            // return call stack (stack - 1)
+            board.togglePiece(row, col);
+            return solutionCount;
+          } else {
+            // untoggle
+            board.togglePiece(row, col);
+          }
         } else {
+          // recurse to next row (row + 1, stack + 1)
+          solutionCount = window.countNRooksSolutions(n, board, row + 1, solutionCount);
+          // untoggle current column position
           board.togglePiece(row, col);
-          // col += 1;
+          // if next column does not exist
+          if (col + 1 === n) {
+            // return call stack (stack - 1)
+            return solutionCount;
+          }
         }
       } else {
-        // else recursively pass in n, board, row+1, and solutions
-        solutions = window.countNRooksSolutions(n, board, row+1, solutions);
-      }
-    } else {
-      // else untoggle cell
-      board.togglePiece(row, col);
-      // check if next col exists
-      if (col + 1 === n) {
-        solutions = window.countNRooksSolutions(n, board, row-1, solutions);
+        // untoggle piece
+        board.togglePiece(row, col);
+        // if next column does not exist
+        if (col + 1 === n) {
+          // return call stack (stack - 1)
+          return solutionCount;
+        }
       }
     }
   }
 
-  console.log('Number of solutions for ' + n + ' rooks:', solutions);
+  console.log('Number of solutions for ' + n + ' rooks:', solutionCount);
   // return solutions count
-  return solutions;
+  return solutionCount;
 };
 
 
