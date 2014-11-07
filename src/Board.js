@@ -88,9 +88,11 @@
         if (row[i] === 1) {
           counter += 1;
         }
+        if (counter > 1) {
+          return true;
+        }
       }
-      // return if counter is greater than 1
-      return counter > 1;
+      return false;
     },
 
     // test if any rows on this board contain conflicts
@@ -102,7 +104,6 @@
           return true;
         }
       }
-      // return false
       return false;
     },
 
@@ -123,9 +124,11 @@
         if (board[i][colIndex] === 1) {
           counter += 1;
         }
+        if (counter > 1) {
+          return true;
+        }
       }
-      // return whether counter is greater than 1
-      return counter > 1;
+      return false;
     },
 
     // test if any columns on this board contain conflicts
@@ -137,7 +140,6 @@
           return true;
         }
       }
-      // return false
       return false;
     },
 
@@ -151,34 +153,20 @@
       // initialize variables
       var counter = 0;
       var board = this.rows();
-      var colIndex = majorDiagonalColumnIndexAtFirstRow;
+      var col = majorDiagonalColumnIndexAtFirstRow;
 
-      // check if column index is negative
-      if (colIndex < 0) {
-        rowIndex = -colIndex;
-        colIndex = 0;
-        // iterate through board rows based on argument
-        // iterate up to n-2 to avoid unneccessary conflict detection
-        for (var i = rowIndex; i < this.get('n') - 2; i++) {
-          // if there is a conflict, increment the counter
-          if (board[i][colIndex] === 1) {
-            counter += 1;
-          }
-          colIndex += 1;
+      // iterate through board rows based on argument
+      for (var row = 0; row < this.get('n'); row++) {
+        // if there is a conflict increment the counter
+        if (board[row][col] === 1) {
+          counter += 1;
         }
-      } else {
-        // iterate through board rows based on argument
-        for (var i = 0; i < this.get('n') - majorDiagonalColumnIndexAtFirstRow; i++) {
-          // if there is a conflict increment the counter
-          if (board[i][colIndex] === 1) {
-            counter += 1;
-          }
-          colIndex += 1;
+        if (counter > 1) {
+          return true;
         }
+        col += 1;
       }
-
-      // return counter > 1
-      return counter > 1;
+      return false;
     },
 
     // test if any major diagonals on this board contain conflicts
@@ -190,7 +178,6 @@
           return true;
         }
       }
-      // return false
       return false;
     },
 
@@ -204,34 +191,20 @@
       // initialize variables
       var counter = 0;
       var board = this.rows();
-      var colIndex = minorDiagonalColumnIndexAtFirstRow;
+      var col = minorDiagonalColumnIndexAtFirstRow;
 
-      // check if column index is negative
-      if (colIndex >= this.get('n')) {
-        rowIndex = colIndex - this.get('n') + 1;
-        colIndex = this.get('n') - 1;
-        // iterate through board rows based on argument
-        // iterate up to n-2 to avoid unneccessary conflict detection
-        for (var i = rowIndex; i < this.get('n') - 2; i++) {
-          // if there is a conflict, increment the counter
-          if (board[i][colIndex] === 1) {
-            counter += 1;
-          }
-          colIndex -= 1;
+      // iterate through board rows based on argument
+      for (var row = 0; row < this.get('n'); row++) {
+        // if there is a conflict increment the counter
+        if (board[row][col] === 1) {
+          counter += 1;
         }
-      } else {
-        // iterate through board rows based on argument
-        for (var i = 0; i < minorDiagonalColumnIndexAtFirstRow + 1; i++) {
-          // if there is a conflict increment the counter
-          if (board[i][colIndex] === 1) {
-            counter += 1;
-          }
-          colIndex -= 1;
+        if (counter > 1) {
+          return true;
         }
+        col -= 1;
       }
-
-      // return counter > 1
-      return counter > 1;
+      return false;
     },
 
     // test if any minor diagonals on this board contain conflicts
@@ -242,7 +215,6 @@
           return true;
         }
       }
-      // return false
       return false;
     }
 
